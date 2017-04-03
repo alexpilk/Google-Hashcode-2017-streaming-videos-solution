@@ -1,8 +1,7 @@
-ex1 = "datasets/example.in"
-ex2 = "datasets/me_at_the_zoo.in"
-ex3 = "datasets/kittens.in"
-ex4 = "datasets/videos_worth_spreading.in"
-ex5 = "datasets/trending_today.in"
+import os
+
+datasets = ["example.in", "me_at_the_zoo.in", "videos_worth_spreading.in", "trending_today.in", "kittens.in"]
+dataset_index = 0
 
 class Video:
 	
@@ -27,7 +26,6 @@ class Video:
 	def get_quantity(cls):
 		print(cls.quantity, "videos available")
 		return cls.quantity
-	
 
 class Server:
 
@@ -62,7 +60,6 @@ class Server:
 				print("\t\t",end="")
 				vid.info()
 			return 1
-
 
 class Cache(Server):
 
@@ -177,7 +174,7 @@ class Request:
 	
 # split input file into a list of rows
 f = []
-with open(ex2) as input_file:
+with open(os.path.join("datasets", datasets[dataset_index])) as input_file:
 	f = input_file.read().split('\n')
 	f = [n.split(" ") for n in f]
 
@@ -297,7 +294,7 @@ for i in range(len(CACHES)):
 			OUTPUT[-1].append(v.index)
 
 print(OUTPUT)
-o = open('result.txt','w')
+o = open(datasets[dataset_index]+'_result.txt','w')
 for row in OUTPUT:
 	string = ""
 	for c in row:
