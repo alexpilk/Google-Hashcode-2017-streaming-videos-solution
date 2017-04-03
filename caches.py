@@ -1,7 +1,7 @@
 import os
 
 datasets = ["example.in", "me_at_the_zoo.in", "videos_worth_spreading.in", "trending_today.in", "kittens.in"]
-dataset_index = 0
+dataset_index = 3
 
 class Video:
 	
@@ -224,10 +224,17 @@ for m in movies:
 		ENDPOINTS[m[1]].add_request(Request(VIDEOS[m[0]],m[2]))
 
 # Get rid of endpoints with no connections to caches
-for ep_index in range(Endpoint.quantity):
-	for con in ENDPOINTS[ep_index].connections:
-		if len(ENDPOINTS[ep_index].connections) < 2:
-			del ENDPOINTS[ep_index]
+ep_index = 0
+while ep_index < Endpoint.quantity:
+	print(len(ENDPOINTS), ep_index)
+	#ENDPOINTS[ep_index].info()
+	print(ep_index)
+	if len(ENDPOINTS[ep_index].connections) < 2:
+
+		del ENDPOINTS[ep_index]
+		Endpoint.quantity -= 1
+	else:
+		ep_index += 1
 
 # Find all requested videos
 for ep in ENDPOINTS:
