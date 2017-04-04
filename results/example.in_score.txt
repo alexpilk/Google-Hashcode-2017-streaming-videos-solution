@@ -1,0 +1,2 @@
+Score: 562500
+Computation time: 0
