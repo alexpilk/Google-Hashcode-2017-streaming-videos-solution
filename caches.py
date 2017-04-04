@@ -4,7 +4,7 @@ import sys
 
 datasets = ["example.in", "me_at_the_zoo.in",
             "videos_worth_spreading.in", "trending_today.in", "kittens.in"]
-dataset_index = 4 # choose the dataset here
+dataset_index = 2 # choose the dataset here
 total_requests = 0 # will be used to compute time saved per request
 start_time = time.time()
 
@@ -218,7 +218,7 @@ ENDPOINTS = []
 
 count = 0
 endpoint_counter = 0
-while count < len(endpoint_info):
+while count < Request.quantity:
 
     ENDPOINTS.append(Endpoint(endpoint_counter, endpoint_info[count][1]))
     ENDPOINTS[-1].add_connection(Connection(DATACENTER,
@@ -233,41 +233,42 @@ while count < len(endpoint_info):
     count += num_of_caches + 1
     endpoint_counter += 1
 
-movies = list(f[-1 * info["request_d"]:])
+request_info = list(f[-1 * info["request_d"]:])
 
 # Add requests to endpoints while filtering videos that are too big
-for m in movies:
-    total_requests += m[2]
-    if VIDEOS[m[0]].size <= Cache.size:
-        ENDPOINTS[m[1]].add_request(Request(VIDEOS[m[0]], m[2]))
+for req_inf in request_info:
+    total_requests += req_inf[2]
+    if VIDEOS[req_inf[0]].size <= Cache.size:
+        ENDPOINTS[req_inf[1]].add_request(Request(VIDEOS[req_inf[0]], req_inf[2]))
 
-# Get rid of endpoints with no connections to caches
-# print("Deleting non-relevant endpoints...")
-# sys.stdout.flush()
+#Get rid of endpoints with no connections to caches
+print("Deleting non-relevant endpoints...")
+sys.stdout.flush()
 
-# ep_index = 0
-# while ep_index < Endpoint.quantity:
-#     if len(ENDPOINTS[ep_index].connections) < 2:
-#         del ENDPOINTS[ep_index]
-#         Endpoint.quantity -= 1
-#     else:
-#         ep_index += 1
+ep_index = 0
+while ep_index < Endpoint.quantity:
+    if len(ENDPOINTS[ep_index].connections) < 2:
+        del ENDPOINTS[ep_index]
+        Endpoint.quantity -= 1
+    else:
+        ep_index += 1
 
-# print("Deleting non-relevant videos...")
-# sys.stdout.flush()
-# # Find all requested videos
-# for ep in ENDPOINTS:
-#     for req in ep.requests:
-#         VIDEOS[req.video.index].is_requested = True
+print("Deleting non-relevant videos...")
+sys.stdout.flush()
+# Find all requested videos
+for ep in ENDPOINTS:
+    for req in ep.requests:
+        VIDEOS[req.video.index].is_requested = True
 
-# # Get rid of videos that are too big and are not requested
-# v_index = 0
-# while v_index < len(VIDEOS):
-#     if VIDEOS[v_index].size > Cache.size or VIDEOS[v_index].is_requested == False:
-#         # print("Deleted", VIDEOS[v_index].size)
-#         del VIDEOS[v_index]
-#     else:
-#         v_index += 1
+# Get rid of videos that are too big and are not requested
+v_index = 0
+while v_index < Video.quantity:
+    if VIDEOS[v_index].size > Cache.size or VIDEOS[v_index].is_requested == False:
+        # print("Deleted", VIDEOS[v_index].size)
+        del VIDEOS[v_index]
+        Video.quantity -= 1
+    else:
+        v_index += 1
 
 # Sort cache servers for endpoints by latency OOP
 print("Sorting caches by latency...")
